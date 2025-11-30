@@ -105,6 +105,13 @@ jobs:
           echo "Clone kernel source => ($KERNEL_REPO)"
       - env:
           toolchains: ${{ toJSON(matrix.repos.toolchains) }}
+          # ... (После шага Clone kernel source и перед Integrate Kernel Root)
+
+      - name: Force Prepare to bypass "is not clean"
+        run: |
+          make prepare -i
+        working-directory: ${{ env.KERNEL_NAME }} 
+# ...
         name: Get toolchains
         run: |
           toolchains_num="$(echo $toolchains | jq 'length')"
