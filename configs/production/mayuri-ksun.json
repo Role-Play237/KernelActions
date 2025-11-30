@@ -4,8 +4,7 @@
     "device": "ruby",
     "vendor": "xiaomi",
     "name": "mayuri-ksun",
-    // СТАРОЕ: "defconfig": "ruby_defconfig",
-    "defconfig": "ruby_user_defconfig", // <-- ИСПРАВЛЕНО
+    "defconfig": "ruby_user_defconfig",
     "extraConfig": "vendor/bbr.config vendor/noop.config vendor/lru.config vendor/kernelsu.config vendor/susfs.config",
     "repo": "https://github.com/Mayuri-Chan/android_kernel_xiaomi_ruby",
     "branch": "main"
