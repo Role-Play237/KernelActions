@@ -101,9 +101,9 @@ jobs:
         env:
           GIT_TERMINAL_PROMPT: 0
 
-      - name: Clean Kernel Source (make mrproper) 💥
+      - name: Clean Kernel Source (make clean) 💥
         run: |
-          make mrproper
+          make clean
         working-directory: ${{ env.KERNEL_NAME }}
 
       - name: Get toolchains
