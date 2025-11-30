@@ -5,13 +5,13 @@
       "vendor": "xiaomi",
       "name": "mayuri-ksun",
       "defconfig": "ruby_user_defconfig",
-      "extraConfig": "disabled",
+      "extraConfig": "vendor/bbr.config vendor/noop.config vendor/lru.config vendor/kernelsu.config vendor/susfs.config", 
       "repo": "https://github.com/Mayuri-Chan/android_kernel_xiaomi_ruby",
       "branch": "12.1"
-  },
+    },
     "output_image": "Image.gz-dtb",
     "use_python2": false,
-    "additional_script_link": "https://raw.githubusercontent.com/Role-Play237/KernelActions/main/fix_config.sh",
+    "additional_script_link": "disabled",
     "additional_post_script_link": "disabled",
     "kp": {
       "use": false,
