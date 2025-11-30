@@ -105,7 +105,11 @@ jobs:
           echo "Clone kernel source => ($KERNEL_REPO)"
       - env:
           toolchains: ${{ toJSON(matrix.repos.toolchains) }}
-        name: Get toolchains
+      - name: Clean Kernel Source (make mrproper) 💥
+        run: |
+          make mrproper
+        working-directory: ${{ env.KERNEL_NAME }}
+       name: Get toolchains
         run: |
           toolchains_num="$(echo $toolchains | jq 'length')"
           echo "There are $toolchains_num defined toolchains."
