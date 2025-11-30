@@ -345,22 +345,31 @@ jobs:
         if: ${{ env.additional_script_link != 'disabled' }}
         run: |
           curl -LSs "${{ env.additional_script_link }}" | bash
-      - name: "Make defconfig"
-        working-directory: ${{ env.KERNEL_NAME }}
-        env:
-          args: ${{ steps.generate-args.outputs.args }}
-          arch: ${{ steps.generate-args.outputs.ARCH }}
-        run: |
-          if [[ -n "${{ env.EXTRA_CONFIG_NAME }}" ]]; then
-            make ${{ env.args }} ${{ env.DEFCONFIG_NAME }}
-            for extra_config_config_file in ${{ env.EXTRA_CONFIG_NAME }}; do
-              echo "-- Now running append fregmented file: $extra_config_config_file"
-              make ${{ env.args }} $extra_config_config_file
-            done
-          else
-            echo "PATH Variable: $PATH"
-            make ${{ env.args }} ${{ env.DEFCONFIG_NAME }}
-          fi
+- name: "Make defconfig and merge fragments"
+        working-directory: ${{ env.KERNEL_NAME }}
+        env:
+          args: ${{ steps.generate-args.outputs.args }}
+          arch: ${{ steps.generate-args.outputs.ARCH }}
+        run: |
+          # 1. Создаем базовый .config
+          make ${{ env.args }} ${{ env.DEFCONFIG_NAME }}
+          
+          # Проверяем, есть ли дополнительные конфиги для объединения
+          if [[ -n "${{ env.EXTRA_CONFIG_NAME }}" && "${{ env.EXTRA_CONFIG_NAME }}" != "disabled" ]]; then
+            echo "--- Merging Configuration Fragments ---"
+            
+            # Копируем .config в папку ядра (где должен работать merge_config.sh)
+            cp ${{ env.OUT_DIR }}/.config ./.config
+            
+            # Выполняем правильное объединение
+            ./scripts/kconfig/merge_config.sh -m .config ${{ env.EXTRA_CONFIG_NAME }}
+            
+            # Копируем обновленный .config обратно в OUT_DIR
+            cp ./.config ${{ env.OUT_DIR }}/.config
+            echo "--- Configuration merge complete ---"
+          else
+            echo "No extra config fragments specified, skipping merge."
+          fi
       - name: "Build kernel"
         working-directory: ${{ env.KERNEL_NAME }}
         env:
