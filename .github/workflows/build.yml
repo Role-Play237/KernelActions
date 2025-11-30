@@ -103,10 +103,6 @@ jobs:
           HEAD)\n"
 
           echo "Clone kernel source => ($KERNEL_REPO)"
-      - name: Force Prepare to bypass "is not clean" 💥
-        run: |
-          make prepare -i
-        working-directory: ${{ env.KERNEL_NAME }}
       - name: Get toolchains
         env:
           toolchains: ${{ toJSON(matrix.repos.toolchains) }}
@@ -315,6 +311,17 @@ jobs:
             echo "No extra config fragments specified or they are disabled. Skipping merge."
           fi
         working-directory: ${{ env.KERNEL_NAME }}
+
+      # ... (Конец шага Make defconfig and merge fragments)
+      - env:
+          args: ${{ steps.generate-args.outputs.args }}
+        name: Force Prepare to bypass "is not clean" 💥
+        run: |
+          # Выполняет prepare с флагом -i для игнорирования ошибки
+          # отсутствующего Makefile и принудительного создания автоконфига.
+          make ${{ env.args }} prepare -i
+        working-directory: ${{ env.KERNEL_NAME }}
+
       - env:
           args: ${{ steps.generate-args.outputs.args }}
         name: Build kernel
