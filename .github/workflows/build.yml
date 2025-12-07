@@ -300,7 +300,7 @@ jobs:
             # Копируем .config из OUT_DIR в текущую директорию (корень ядра)
             cp ${{ env.OUT_DIR }}/.config ./.config
             
-            # Выполняем объединение конфигураций (ключ -m сохраняет текущий .config)
+            # Выполняем объединение конфигураций (ключ -м сохраняет текущий .config)
             $MERGE_SCRIPT -m .config ${{ env.EXTRA_CONFIG_NAME }}
             
             # Копируем обновленный .config обратно в OUT_DIR для этапа сборки
@@ -312,15 +312,7 @@ jobs:
           fi
         working-directory: ${{ env.KERNEL_NAME }}
 
-      # ... (Конец шага Make defconfig and merge fragments)
-      - env:
-          args: ${{ steps.generate-args.outputs.args }}
-        name: Force Prepare to bypass "is not clean" 💥
-        run: |
-          # Выполняет prepare с флагом -i для игнорирования ошибки
-          # отсутствующего Makefile и принудительного создания автоконфига.
-          make ${{ env.args }} prepare -i
-        working-directory: ${{ env.KERNEL_NAME }}
+      # Удалённый пункт "Force Prepare to bypass 'is not clean' 💥"
 
       - env:
           args: ${{ steps.generate-args.outputs.args }}
